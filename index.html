@@ -250,7 +250,9 @@
     </footer>
 
     <script>
-        const mp3Files = [
+        const baseURL = "https://github.com/vanjaka-korporacija/dobra-mjuza/releases/download/v1.0/";
+
+        const rawMp3Files = [
             "A Seagull & Clouds - Himiko Kituchi.mp3",
             "Baby Talk - Himiko Kituchi.mp3",
             "Blojska Rapsodija - Valentino Bošković.mp3",
@@ -306,6 +308,11 @@
             "Yellow Submarine - The Beatles.mp3"
         ];
 
+        const mp3Files = rawMp3Files.map(file => ({
+            name: file,
+            url: baseURL + encodeURIComponent(file)
+        }));
+
         let currentIndex = 0;
         const audio = document.getElementById('audioElement');
         let isPlaying = false;
@@ -327,11 +334,11 @@
 
         function buildPlaylistUI() {
             playlistContainer.innerHTML = "";
-            mp3Files.forEach((file, index) => {
+            mp3Files.forEach((song, index) => {
                 let item = document.createElement('div');
                 item.className = 'playlist-item' + (index === currentIndex ? ' active' : '');
                 item.id = `song-item-${index}`;
-                item.innerHTML = `<span>${index + 1}. ${file}</span>`;
+                item.innerHTML = `<span>${index + 1}. ${song.name}</span>`;
                 item.onclick = () => {
                     currentIndex = index;
                     loadSong(currentIndex);
@@ -343,8 +350,8 @@
 
         function loadSong(index) {
             currentIndex = index;
-            audio.src = mp3Files[currentIndex];
-            titleBar.innerText = `Sada svira: ${mp3Files[currentIndex]}`;
+            audio.src = mp3Files[currentIndex].url;
+            titleBar.innerText = `Sada svira: ${mp3Files[currentIndex].name}`;
             
             document.querySelectorAll('.playlist-item').forEach((el, idx) => {
                 if (idx === currentIndex) {
