@@ -10,7 +10,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Nema scrollanja ni na jednom ekranu */
+            overflow: hidden;
         }
 
         body {
@@ -33,10 +33,9 @@
             flex-direction: column;
             flex: 1;
             justify-content: center;
-            min-height: 0; /* Ključno za fleksibilno smanjivanje u flexboxu */
+            min-height: 0;
         }
 
-        /* Centralizirani logo umjesto naslova */
         .logo-container {
             text-align: center;
             margin-bottom: 10px;
@@ -46,11 +45,10 @@
         .logo-container img {
             max-width: 100%;
             height: auto;
-            max-height: 60px; /* Smanjeno da stane na mobitele bez scrolla */
+            max-height: 60px;
             filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.7));
         }
 
-        /* 2000s Windows Media Player Stil */
         .retro-player-window {
             background: #ece9d8;
             border: 2px solid;
@@ -63,12 +61,10 @@
             flex-shrink: 0;
         }
 
-        /* HTML5 Audio element (skriven) */
         #audioElement {
             display: none;
         }
 
-        /* Traka s nazivom pjesme */
         .retro-info-bar {
             background: #ffffff;
             border: 1px inset #716f64;
@@ -82,7 +78,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Progress bar (Traka napretka) */
         .progress-container {
             background: #d4d0c8;
             border: 1px inset #716f64;
@@ -107,7 +102,6 @@
             font-weight: bold;
         }
 
-        /* Kontrolna ploča s 2000s gumbima */
         .retro-controls {
             display: flex;
             gap: 6px;
@@ -134,7 +128,6 @@
             padding: 5px 9px 3px 11px;
         }
 
-        /* Lista pjesama (Winamp Playlist stil) - unutra je scroll, ali cijela stranica NEMA scroll */
         h2 {
             font-size: 13px;
             text-shadow: 1px 1px 2px #000;
@@ -147,9 +140,9 @@
         .playlist-box {
             background: #000;
             border: 2px inset #716f64;
-            flex: 1; /* Popunjava preostali prostor bez da raste preko ekrana */
+            flex: 1;
             min-height: 80px;
-            overflow-y: auto; /* Scrollamo samo unutar playliste ako pjesme ne stanu */
+            overflow-y: auto;
             padding: 4px;
             font-family: Tahoma, sans-serif;
             font-size: 11px;
@@ -174,7 +167,6 @@
             font-weight: bold;
         }
 
-        /* Kontakt tekst poviše footera */
         .contact-text {
             text-align: center;
             font-size: 11px;
@@ -190,7 +182,6 @@
             text-decoration: underline;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             font-size: 11px;
@@ -252,70 +243,65 @@
     <script>
         const baseURL = "https://github.com/vanjaka-korporacija/dobra-mjuza/releases/download/v1.0/";
 
-        const rawMp3Files = [
-            "A Seagull & Clouds - Himiko Kituchi.mp3",
-            "Baby Talk - Himiko Kituchi.mp3",
-            "Blojska Rapsodija - Valentino Bošković.mp3",
-            "Brijuni - Dubioza Kolektiv.mp3",
-            "Chile - Gdinjko.mp3",
-            "Devojko Mala - Đuza Stojiljković.mp3",
-            "Drama - Let 3.mp3",
-            "Droga - Let 3.mp3",
-            "Ducky Ducky - Himiko Kituchi.mp3",
-            "Fluffy - Himiko Kituchi.mp3",
-            "Flying Beagle - Himiko Kituchi.mp3",
-            "Girl - The Beatles.mp3",
-            "Golubovi - Ivo Robić.mp3",
-            "Heroyix - TBF.mp3",
-            "Hit The Road Jack - Ray Charles.mp3",
-            "Idem i Ja...Ne, Ti Ne - Kvartet 4M.mp3",
-            "If I Fell - The Beatles.mp3",
-            "Ja Ljubim Je, Je - Kvartet 4M.mp3",
-            "K'o Svakog Dana - Miro Ungar.mp3",
-            "Kažu - Dubioza Kolektiv.mp3",
-            "Look Your Back! - Himiko Kituchi.mp3",
-            "Malena - Idoli.mp3",
-            "Maljčiki - Idoli.mp3",
-            "Moja Posljednja i Prva Ljubavi - Tereza Kesovija.mp3",
-            "Mr Blue Sky - Electric Light Orchestra.mp3",
-            "My Way - Frank Sinatra.mp3",
-            "Neka Cijeli Ovaj Svijet (Jalta, Jalta) - Alfi Kabiljo.mp3",
-            "Ni Ti, Ni Ja - Gabi Novak.mp3",
-            "Nima Splita Do Splita - Tereza Kesovija.mp3",
-            "Nono - Tereza Kesovija.mp3",
-            "Oluja - Josipa Lisac.mp3",
-            "Ostavi mi Barem Nešto - Gabi Novak.mp3",
-            "Pamtim Samo Sretne Dane - Gabi Novak.mp3",
-            "Plastika - Idoli.mp3",
-            "Pop Muzik - M.mp3",
-            "Prijatelji Stari Gdje Ste - Tereza Kesovija.mp3",
-            "Riječke Pičke - Let 3.mp3",
-            "Sam u Vodi - Let 3.mp3",
-            "Sam u Vodi - Tereza Kesovija i Let 3.mp3",
-            "Samo Jednom se Ljubi - Ivo Robić.mp3",
-            "Sand Storm - Himiko Kituchi.mp3",
-            "Schwüle Über Europa - Idoli.mp3",
-            "Serenada Opatiji - Ivo Robić.mp3",
-            "Smak Svita - TBF.mp3",
-            "Sretan Put - Gabi Novak.mp3",
-            "Stranci u Noći - Ivo Robić.mp3",
-            "Sudnji Don - Valentino Bošković.mp3",
-            "Sviradu Jazz - Gdinjko.mp3",
-            "Sviraj Mi Sviraj - Tereza Kesovija.mp3",
-            "The Second Summer - Himiko Kituchi.mp3",
-            "U Gdinju je Ray - Gdinjko.mp3",
-            "Vjeran Pas - Let 3.mp3",
-            "Yellow Submarine - The Beatles.mp3"
-        ];
-
-        // Automatski pretvara razmake i ampersande u točke da odgovaraju GitHub linkovima
-        const mp3Files = rawMp3Files.map(file => {
-            const githubFileName = file.replace(/[\s&]+/g, '.');
-            return {
-                name: file,
-                url: baseURL + encodeURIComponent(githubFileName)
-            };
-        });
+        // Definiramo lijepi naziv za prikaz i točan naziv fajla na GitHubu
+        const mp3Files = [
+            { name: "A Seagull & Clouds - Himiko Kituchi", file: "A.Seagull.&.Clouds.-.Himiko.Kituchi.mp3" },
+            { name: "Baby Talk - Himiko Kituchi", file: "Baby.Talk.-.Himiko.Kituchi.mp3" },
+            { name: "Blojska Rapsodija - Valentino Bošković", file: "Blojska.Rapsodija.-.Valentino.Bošković.mp3" },
+            { name: "Brijuni - Dubioza Kolektiv", file: "Brijuni.-.Dubioza.Kolektiv.mp3" },
+            { name: "Chile - Gdinjko", file: "Chile.-.Gdinjko.mp3" },
+            { name: "Devojko Mala - Đuza Stojiljković", file: "Devojko.Mala.-.Đuza.Stojiljković.mp3" },
+            { name: "Drama - Let 3", file: "Drama.-.Let.3.mp3" },
+            { name: "Droga - Let 3", file: "Droga.-.Let.3.mp3" },
+            { name: "Ducky Ducky - Himiko Kituchi", file: "Ducky.Ducky.-.Himiko.Kituchi.mp3" },
+            { name: "Fluffy - Himiko Kituchi", file: "Fluffy.-.Himiko.Kituchi.mp3" },
+            { name: "Flying Beagle - Himiko Kituchi", file: "Flying.Beagle.-.Himiko.Kituchi.mp3" },
+            { name: "Girl - The Beatles", file: "Girl.-.The.Beatles.mp3" },
+            { name: "Golubovi - Ivo Robić", file: "Golubovi.-.Ivo.Robić.mp3" },
+            { name: "Heroyix - TBF", file: "Heroyix.-.TBF.mp3" },
+            { name: "Hit The Road Jack - Ray Charles", file: "Hit.The.Road.Jack.-.Ray.Charles.mp3" },
+            { name: "Idem i Ja...Ne, Ti Ne - Kvartet 4M", file: "Idem.i.Ja...Ne,.Ti.Ne.-.Kvartet.4M.mp3" },
+            { name: "If I Fell - The Beatles", file: "If.I.Fell.-.The.Beatles.mp3" },
+            { name: "Ja Ljubim Je, Je - Kvartet 4M", file: "Ja.Ljubim.Je,.Je.-.Kvartet.4M.mp3" },
+            { name: "K'o Svakog Dana - Miro Ungar", file: "K'o.Svakog.Dana.-.Miro.Ungar.mp3" },
+            { name: "Kažu - Dubioza Kolektiv", file: "Kažu.-.Dubioza.Kolektiv.mp3" },
+            { name: "Look Your Back! - Himiko Kituchi", file: "Look.Your.Back!.-.Himiko.Kituchi.mp3" },
+            { name: "Malena - Idoli", file: "Malena.-.Idoli.mp3" },
+            { name: "Maljčiki - Idoli", file: "Maljčiki.-.Idoli.mp3" },
+            { name: "Moja Posljednja i Prva Ljubavi - Tereza Kesovija", file: "Moja.Posljednja.i.Prva.Ljubavi.-.Tereza.Kesovija.mp3" },
+            { name: "Mr Blue Sky - Electric Light Orchestra", file: "Mr.Blue.Sky.-.Electric.Light.Orchestra.mp3" },
+            { name: "My Way - Frank Sinatra", file: "My.Way.-.Frank.Sinatra.mp3" },
+            { name: "Neka Cijeli Ovaj Svijet (Jalta, Jalta) - Alfi Kabiljo", file: "Neka.Cijeli.Ovaj.Svijet.(Jalta,.Jalta).-.Alfi.Kabiljo.mp3" },
+            { name: "Ni Ti, Ni Ja - Gabi Novak", file: "Ni.Ti,.Ni.Ja.-.Gabi.Novak.mp3" },
+            { name: "Nima Splita Do Splita - Tereza Kesovija", file: "Nima.Splita.Do.Splita.-.Tereza.Kesovija.mp3" },
+            { name: "Nono - Tereza Kesovija", file: "Nono.-.Tereza.Kesovija.mp3" },
+            { name: "Oluja - Josipa Lisac", file: "Oluja.-.Josipa.Lisac.mp3" },
+            { name: "Ostavi mi Barem Nešto - Gabi Novak", file: "Ostavi.mi.Barem.Nešto.-.Gabi.Novak.mp3" },
+            { name: "Pamtim Samo Sretne Dane - Gabi Novak", file: "Pamtim.Samo.Sretne.Dane.-.Gabi.Novak.mp3" },
+            { name: "Plastika - Idoli", file: "Plastika.-.Idoli.mp3" },
+            { name: "Pop Muzik - M", file: "Pop.Muzik.-.M.mp3" },
+            { name: "Prijatelji Stari Gdje Ste - Tereza Kesovija", file: "Prijatelji.Stari.Gdje.Ste.-.Tereza.Kesovija.mp3" },
+            { name: "Riječke Pičke - Let 3", file: "Riječke.Pičke.-.Let.3.mp3" },
+            { name: "Sam u Vodi - Let 3", file: "Sam.u.Vodi.-.Let.3.mp3" },
+            { name: "Sam u Vodi - Tereza Kesovija i Let 3", file: "Sam.u.Vodi.-.Tereza.Kesovija.i.Let.3.mp3" },
+            { name: "Samo Jednom se Ljubi - Ivo Robić", file: "Samo.Jednom.se.Ljubi.-.Ivo.Robić.mp3" },
+            { name: "Sand Storm - Himiko Kituchi", file: "Sand.Storm.-.Himiko.Kituchi.mp3" },
+            { name: "Schwüle Über Europa - Idoli", file: "Schwüle.Über.Europa.-.Idoli.mp3" },
+            { name: "Serenada Opatiji - Ivo Robić", file: "Serenada.Opatiji.-.Ivo.Robić.mp3" },
+            { name: "Smak Svita - TBF", file: "Smak.Svita.-.TBF.mp3" },
+            { name: "Sretan Put - Gabi Novak", file: "Sretan.Put.-.Gabi.Novak.mp3" },
+            { name: "Stranci u Noći - Ivo Robić", file: "Stranci.u.Noći.-.Ivo.Robić.mp3" },
+            { name: "Sudnji Don - Valentino Bošković", file: "Sudnji.Don.-.Valentino.Bošković.mp3" },
+            { name: "Sviradu Jazz - Gdinjko", file: "Sviradu.Jazz.-.Gdinjko.mp3" },
+            { name: "Sviraj Mi Sviraj - Tereza Kesovija", file: "Sviraj.Mi.Sviraj.-.Tereza.Kesovija.mp3" },
+            { name: "The Second Summer - Himiko Kituchi", file: "The.Second.Summer.-.Himiko.Kituchi.mp3" },
+            { name: "U Gdinju je Ray - Gdinjko", file: "U.Gdinju.je.Ray.-.Gdinjko.mp3" },
+            { name: "Vjeran Pas - Let 3", file: "Vjeran.Pas.-.Let.3.mp3" },
+            { name: "Yellow Submarine - The Beatles", file: "Yellow.Submarine.-.The.Beatles.mp3" }
+        ].map(song => ({
+            name: song.name,
+            url: baseURL + encodeURIComponent(song.file)
+        }));
 
         let currentIndex = 0;
         const audio = document.getElementById('audioElement');
