@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dobra Mjuza - Svijet Glazbe</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Nema scrollanja ni na jednom ekranu */
+        }
+
+        body {
+            background-color: #004e98;
+            background-image: linear-gradient(to bottom, #1068c3, #002b66);
+            font-family: Tahoma, Arial, sans-serif;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: center;
+            min-height: 0; /* Ključno za fleksibilno smanjivanje u flexboxu */
+        }
+
+        /* Centralizirani logo umjesto naslova */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 60px; /* Smanjeno da stane na mobitele bez scrolla */
+            filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.7));
+        }
+
+        /* 2000s Windows Media Player Stil */
+        .retro-player-window {
+            background: #ece9d8;
+            border: 2px solid;
+            border-color: #ffffff #002266 #002266 #ffffff;
+            border-radius: 4px;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        /* HTML5 Audio element (skriven) */
+        #audioElement {
+            display: none;
+        }
+
+        /* Traka s nazivom pjesme */
+        .retro-info-bar {
+            background: #ffffff;
+            border: 1px inset #716f64;
+            padding: 5px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #002266;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Progress bar (Traka napretka) */
+        .progress-container {
+            background: #d4d0c8;
+            border: 1px inset #716f64;
+            height: 12px;
+            margin-bottom: 4px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            background: linear-gradient(to right, #0055ea, #2680eb);
+            height: 100%;
+            width: 0%;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #333;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        /* Kontrolna ploča s 2000s gumbima */
+        .retro-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            background: #d4d0c8;
+            padding: 4px;
+            border: 1px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+        }
+
+        .retro-btn {
+            background: #ece9d8;
+            border: 2px solid;
+            border-color: #ffffff #716f64 #716f64 #ffffff;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .retro-btn:active {
+            border-color: #716f64 #ffffff #ffffff #716f64;
+            padding: 5px 9px 3px 11px;
+        }
+
+        /* Lista pjesama (Winamp Playlist stil) - unutra je scroll, ali cijela stranica NEMA scroll */
+        h2 {
+            font-size: 13px;
+            text-shadow: 1px 1px 2px #000;
+            border-bottom: 2px solid #2680eb;
+            padding-bottom: 3px;
+            margin: 0 0 5px 0;
+            flex-shrink: 0;
+        }
+
+        .playlist-box {
+            background: #000;
+            border: 2px inset #716f64;
+            flex: 1; /* Popunjava preostali prostor bez da raste preko ekrana */
+            min-height: 80px;
+            overflow-y: auto; /* Scrollamo samo unutar playliste ako pjesme ne stanu */
+            padding: 4px;
+            font-family: Tahoma, sans-serif;
+            font-size: 11px;
+        }
+
+        .playlist-item {
+            padding: 3px 5px;
+            color: #00ff00;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .playlist-item:hover {
+            background: #002266;
+            color: #ffffff;
+        }
+
+        .playlist-item.active {
+            background: #0055ea;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        /* Kontakt tekst poviše footera */
+        .contact-text {
+            text-align: center;
+            font-size: 11px;
+            color: #ffffff;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-shadow: 1px 1px 2px #000;
+            flex-shrink: 0;
+        }
+
+        .contact-text a {
+            color: #b0d0e6;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            font-size: 11px;
+            color: #b0d0e6;
+            padding: 5px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-shadow: 1px 1px 2px #000;
+            flex-shrink: 0;
+        }
+
+        footer a {
+            color: #b0d0e6;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="logo-container">
+            <img src="logo.png" alt="Dobra Mjuza Logo">
+        </div>
+
+        <div class="retro-player-window">
+            
+            <audio id="audioElement"></audio>
+
+            <div class="retro-info-bar" id="current-song-title">Nema odabrane pjesme</div>
+
+            <div class="progress-container" id="progressContainer" onclick="seekAudio(event)">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="time-display">
+                <span id="currentTime">00:00</span>
+                <span id="durationTime">00:00</span>
+            </div>
+
+            <div class="retro-controls">
+                <button class="retro-btn" onclick="playPrevious()">⏮ Prethodna</button>
+                <button class="retro-btn" id="playPauseBtn" onclick="togglePlay()">▶ Play</button>
+                <button class="retro-btn" onclick="playNext()">⏭ Sljedeća</button>
+            </div>
+        </div>
+
+        <h2>Winamp Playlist (<span id="songCount">0</span> pjesama)</h2>
+        <div class="playlist-box" id="playlistContainer"></div>
+
+    </div>
+
+    <div class="contact-text">
+        Želite li vidjeti i neku Vama dragu pjesmu? Javite nam! <a href="mailto:dobra.mjuza@net.hr">dobra.mjuza@net.hr</a>
+    </div>
+
+    <footer>
+        &copy; 2006 - 2026 Dobra Mjuza | Powered by <a href="https://static.wixstatic.com/media/7b76f9_dbd99645954d41278ccdbea7478fb2f6~mv2.png/v1/fill/w_982,h_629,al_c,q_90,enc_avif,quality_auto/7b76f9_dbd99645954d41278ccdbea7478fb2f6~mv2.png" target="_blank">Vanjaka</a>
+    </footer>
+
+    <script>
+        const mp3Files = [
+            "A Seagull & Clouds - Himiko Kituchi.mp3",
+            "Baby Talk - Himiko Kituchi.mp3",
+            "Blojska Rapsodija - Valentino Bošković.mp3",
+            "Brijuni - Dubioza Kolektiv.mp3",
+            "Chile - Gdinjko.mp3",
+            "Devojko Mala - Đuza Stojiljković.mp3",
+            "Drama - Let 3.mp3",
+            "Droga - Let 3.mp3",
+            "Ducky Ducky - Himiko Kituchi.mp3",
+            "Fluffy - Himiko Kituchi.mp3",
+            "Flying Beagle - Himiko Kituchi.mp3",
+            "Girl - The Beatles.mp3",
+            "Golubovi - Ivo Robić.mp3",
+            "Heroyix - TBF.mp3",
+            "Hit The Road Jack - Ray Charles.mp3",
+            "Idem i Ja...Ne, Ti Ne - Kvartet 4M.mp3",
+            "If I Fell - The Beatles.mp3",
+            "Ja Ljubim Je, Je - Kvartet 4M.mp3",
+            "K'o Svakog Dana - Miro Ungar.mp3",
+            "Kažu - Dubioza Kolektiv.mp3",
+            "Look Your Back! - Himiko Kituchi.mp3",
+            "Malena - Idoli.mp3",
+            "Maljčiki - Idoli.mp3",
+            "Moja Posljednja i Prva Ljubavi - Tereza Kesovija.mp3",
+            "Mr Blue Sky - Electric Light Orchestra.mp3",
+            "My Way - Frank Sinatra.mp3",
+            "Neka Cijeli Ovaj Svijet (Jalta, Jalta) - Alfi Kabiljo.mp3",
+            "Ni Ti, Ni Ja - Gabi Novak.mp3",
+            "Nima Splita Do Splita - Tereza Kesovija.mp3",
+            "Nono - Tereza Kesovija.mp3",
+            "Oluja - Josipa Lisac.mp3",
+            "Ostavi mi Barem Nešto - Gabi Novak.mp3",
+            "Pamtim Samo Sretne Dane - Gabi Novak.mp3",
+            "Plastika - Idoli.mp3",
+            "Pop Muzik - M.mp3",
+            "Prijatelji Stari Gdje Ste - Tereza Kesovija.mp3",
+            "Riječke Pičke - Let 3.mp3",
+            "Sam u Vodi - Let 3.mp3",
+            "Sam u Vodi - Tereza Kesovija i Let 3.mp3",
+            "Samo Jednom se Ljubi - Ivo Robić.mp3",
+            "Sand Storm - Himiko Kituchi.mp3",
+            "Schwüle Über Europa - Idoli.mp3",
+            "Serenada Opatiji - Ivo Robić.mp3",
+            "Smak Svita - TBF.mp3",
+            "Sretan Put - Gabi Novak.mp3",
+            "Stranci u Noći - Ivo Robić.mp3",
+            "Sudnji Don - Valentino Bošković.mp3",
+            "Sviradu Jazz - Gdinjko.mp3",
+            "Sviraj Mi Sviraj - Tereza Kesovija.mp3",
+            "The Second Summer - Himiko Kituchi.mp3",
+            "U Gdinju je Ray - Gdinjko.mp3",
+            "Vjeran Pas - Let 3.mp3",
+            "Yellow Submarine - The Beatles.mp3"
+        ];
+
+        let currentIndex = 0;
+        const audio = document.getElementById('audioElement');
+        let isPlaying = false;
+
+        const playlistContainer = document.getElementById('playlistContainer');
+        const titleBar = document.getElementById('current-song-title');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationTimeEl = document.getElementById('durationTime');
+
+        function initPlayer() {
+            document.getElementById('songCount').innerText = mp3Files.length;
+            buildPlaylistUI();
+            if (mp3Files.length > 0) {
+                loadSong(0);
+            }
+        }
+
+        function buildPlaylistUI() {
+            playlistContainer.innerHTML = "";
+            mp3Files.forEach((file, index) => {
+                let item = document.createElement('div');
+                item.className = 'playlist-item' + (index === currentIndex ? ' active' : '');
+                item.id = `song-item-${index}`;
+                item.innerHTML = `<span>${index + 1}. ${file}</span>`;
+                item.onclick = () => {
+                    currentIndex = index;
+                    loadSong(currentIndex);
+                    playAudio();
+                };
+                playlistContainer.appendChild(item);
+            });
+        }
+
+        function loadSong(index) {
+            currentIndex = index;
+            audio.src = mp3Files[currentIndex];
+            titleBar.innerText = `Sada svira: ${mp3Files[currentIndex]}`;
+            
+            document.querySelectorAll('.playlist-item').forEach((el, idx) => {
+                if (idx === currentIndex) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+        }
+
+        function playAudio() {
+            audio.play().then(() => {
+                isPlaying = true;
+                playPauseBtn.innerText = "⏸ Pauza";
+            }).catch(e => {
+                console.log("Klikni Play za početak reprodukcije.");
+            });
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                playPauseBtn.innerText = "▶ Play";
+            } else {
+                playAudio();
+            }
+        }
+
+        function playNext() {
+            currentIndex++;
+            if (currentIndex >= mp3Files.length) currentIndex = 0;
+            loadSong(currentIndex);
+            playAudio();
+        }
+
+        function playPrevious() {
+            currentIndex--;
+            if (currentIndex < 0) currentIndex = mp3Files.length - 1;
+            loadSong(currentIndex);
+            playAudio();
+        }
+
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = percent + '%';
+                currentTimeEl.innerText = formatTime(audio.currentTime);
+                durationTimeEl.innerText = formatTime(audio.duration);
+            }
+        };
+
+        audio.onended = () => {
+            playNext();
+        };
+
+        function seekAudio(event) {
+            const container = document.getElementById('progressContainer');
+            const rect = container.getBoundingClientRect();
+            const pos = (event.clientX - rect.left) / rect.width;
+            if (audio.duration) {
+                audio.currentTime = pos * audio.duration;
+            }
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        initPlayer();
+    </script>
+
+</body>
+</html>
