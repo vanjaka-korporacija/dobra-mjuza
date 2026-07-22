@@ -308,10 +308,14 @@
             "Yellow Submarine - The Beatles.mp3"
         ];
 
-        const mp3Files = rawMp3Files.map(file => ({
-            name: file,
-            url: baseURL + encodeURIComponent(file)
-        }));
+        // Automatski pretvara razmake i ampersande u točke da odgovaraju GitHub linkovima
+        const mp3Files = rawMp3Files.map(file => {
+            const githubFileName = file.replace(/[\s&]+/g, '.');
+            return {
+                name: file,
+                url: baseURL + encodeURIComponent(githubFileName)
+            };
+        });
 
         let currentIndex = 0;
         const audio = document.getElementById('audioElement');
