@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dobra Mjuza - Svijet Glazbe</title>
     <meta name="description" content="Dobra Mjuza je vaš glazbeni kutak. Slušajte najbolje hitove, pretražujte pjesme i uživajte u glazbi bez gnjavaže.">
+    <meta name="google-site-verification" content="qClRUGZSpvaaAkTejR06eo1KvgdqCRWaMRfuqPyQUwc" />
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
         html, body {
@@ -461,6 +462,10 @@
 
         audio.onended = () => {
             playNext();
+        };
+
+        audio.oncanplaythrough = () => {
+            // Audio is ready
         };
 
         function seekAudio(event) {
